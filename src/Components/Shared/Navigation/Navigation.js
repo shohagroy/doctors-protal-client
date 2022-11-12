@@ -30,8 +30,8 @@ const Navigation = () => {
         <div className="navbar-start ">
           <a className="btn btn-ghost normal-case text-xl">daisyUI</a>
         </div>
-        <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal p-0">{menu}</ul>
+        <div className="navbar-center hidden bg-white lg:flex">
+          <ul className="menu menu-horizontal bg-white z-50 p-0">{menu}</ul>
         </div>
         <div className="dropdown">
           <label tabIndex={0} className="btn btn-ghost lg:hidden">

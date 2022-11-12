@@ -1,5 +1,5 @@
 import React from "react";
-import heroImg from "../../../../assets/images/bg.png";
+import heroImg from "../../../../assets/images/chair.png";
 import bgImg from "../../../../assets/images/bg.png";
 import Button from "../../../Utility/Button";
 
