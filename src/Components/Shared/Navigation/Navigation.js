@@ -19,7 +19,7 @@ const Navigation = () => {
       <NavLink to="/" className="p-2">
         Contact Us
       </NavLink>
-      <NavLink to="/" className="p-2">
+      <NavLink to="/login" className="p-2">
         Login
       </NavLink>
     </>
@@ -28,7 +28,7 @@ const Navigation = () => {
     <section className="max-w-7xl mx-auto">
       <div className="navbar  justify-between">
         <div className="navbar-start ">
-          <a className="btn btn-ghost normal-case text-xl">daisyUI</a>
+          <a className="btn btn-ghost normal-case text-xl">Doctors Portal</a>
         </div>
         <div className="navbar-center hidden bg-white lg:flex">
           <ul className="menu menu-horizontal bg-white z-50 p-0">{menu}</ul>

@@ -44,6 +44,7 @@ const AvailableAppointments = ({ selected }) => {
                 <div className="card-actions  justify-center ">
                   <label
                     className="btn bg-gradient-to-r from-primary text-white border-none to-secondary"
+                    disabled={!option.slots.length}
                     htmlFor="book-appointment"
                     onClick={() => setSelectedDate(option)}
                   >
@@ -74,9 +75,8 @@ const AvailableAppointments = ({ selected }) => {
                 className="input input-bordered w-full mt-4  "
               />
               <select className="input input-bordered w-full mt-4  ">
-                {slots.map((time, i) => (
-                  <option key={i}>{time}</option>
-                ))}
+                {slots &&
+                  slots.map((time, i) => <option key={i}>{time}</option>)}
               </select>
 
               <input
@@ -97,8 +97,11 @@ const AvailableAppointments = ({ selected }) => {
             </form>
 
             <div className="modal-action">
-              <label htmlFor="book-appointment" className="btn">
-                Yay!
+              <label
+                htmlFor="book-appointment"
+                className="btn btn-primary text-white"
+              >
+                Submit
               </label>
             </div>
           </div>
