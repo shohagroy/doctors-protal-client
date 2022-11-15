@@ -1,11 +1,24 @@
 import React from "react";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { AuthContex } from "../../GobalAuthProvaider/GobalAuthProvaider";
 
 const Login = () => {
   const { register, handleSubmit } = useForm();
 
+  const { login } = useContext(AuthContex);
+
   const handelLogin = (data) => {
+    login(data.email, data.password)
+      .then((result) => {
+        const user = result.user;
+
+        console.log(user);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
     console.log(data);
   };
 

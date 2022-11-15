@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { AuthContex } from "../../GobalAuthProvaider/GobalAuthProvaider";
 
 const SignUp = () => {
-  const { createUser } = useContext(AuthContex);
+  const { createUser, updateUser } = useContext(AuthContex);
 
   const {
     register,
@@ -16,7 +16,12 @@ const SignUp = () => {
     createUser(data.email, data.password)
       .then((result) => {
         const user = result.user;
-        console.log(user);
+        updateUser(data.name)
+          .then(() => {
+            // update user name
+            console.log(user);
+          })
+          .catch((err) => console.error(err));
       })
       .catch((err) => {
         console.error(err);
