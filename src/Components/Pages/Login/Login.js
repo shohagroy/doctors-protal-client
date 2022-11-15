@@ -1,13 +1,9 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 
 const Login = () => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit } = useForm();
 
   const handelLogin = (data) => {
     console.log(data);
@@ -25,9 +21,12 @@ const Login = () => {
               </label>
               <input
                 type="email"
+                required
                 {...register("email")}
                 className="input input-bordered w-full"
               />
+
+              <p></p>
             </div>
             <div>
               <label className="label">
@@ -35,6 +34,7 @@ const Login = () => {
               </label>
               <input
                 type="password"
+                required
                 {...register("password")}
                 className="input input-bordered w-full"
               />
@@ -52,9 +52,9 @@ const Login = () => {
             <div>
               <p className="label-text text-center mt-2">
                 New to Doctors Portal?
-                <span className="text-secondary pl-2 font-bold">
+                <Link to="../signup" className="text-secondary pl-2 font-bold">
                   Create new account
-                </span>
+                </Link>
               </p>
             </div>
           </form>
