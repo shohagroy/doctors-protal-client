@@ -1,27 +1,33 @@
+import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import React from "react";
-import { useEffect } from "react";
 import { useState } from "react";
 
 const AvailableAppointments = ({ selected }) => {
-  const [appointmentOptions, setAppointmentOptions] = useState([]);
+  // const [appointmentOptions, setAppointmentOptions] = useState([]);
+  const date = format(selected, "PP");
+
   const [selectedDate, setSelectedDate] = useState({});
   const { name, slots } = selectedDate;
 
-  console.log(name, slots);
+  const {
+    data: appointmentOptions = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["appointmentOptions", date],
+    queryFn: () =>
+      fetch("http://localhost:5000/appointments").then((res) => res.json()),
+  });
 
-  useEffect(() => {
-    fetch("appointmentOptions.json").then((res) =>
-      res.json().then((data) => setAppointmentOptions(data))
-    );
-  }, []);
-
-  const date = format;
   return (
-    <section className="max-w-7xl mx-auto">
+    <section className="max-w-7xl mx-auto relative">
+      <div className={`${isLoading ? "absolute" : "hidden"} top-0 left-1/2`}>
+        <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-red-600"></div>
+      </div>
       <div className="my-6">
         <h3 className="text-center text-xl text-secondary font-bold">
-          Available Appointments on {date(selected, "PP")}
+          Available Appointments on {date}
         </h3>
         <div className="grid grid-cols-1 my-16 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {appointmentOptions.map((option) => (
@@ -71,7 +77,7 @@ const AvailableAppointments = ({ selected }) => {
               <input
                 type="text"
                 disabled
-                value={date(selected, "PP")}
+                value={date}
                 className="input input-bordered w-full mt-4  "
               />
               <select className="input input-bordered w-full mt-4  ">

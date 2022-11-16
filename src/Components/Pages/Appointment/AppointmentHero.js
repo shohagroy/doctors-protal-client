@@ -22,11 +22,13 @@ const AppointmentHero = ({ selected, setSelected }) => {
             <DayPicker
               mode="single"
               selected={selected}
-              onSelect={setSelected}
+              onSelect={(data) => {
+                if (data) {
+                  setSelected(data);
+                }
+              }}
             />
           </div>
-
-          <h3>Date: {format(selected, "PP")}</h3>
         </div>
       </div>
     </section>
