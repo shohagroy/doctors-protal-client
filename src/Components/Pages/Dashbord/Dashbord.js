@@ -9,7 +9,7 @@ const Dashbord = () => {
   const [isAdmin] = useAdmin(user.email);
 
   return (
-    <div className="max-w-7xl mx-auto flex justify-between h-[50%]">
+    <div className="max-w-7xl mx-auto flex  h-[50%]">
       <div className="w-[250px] mx-3  ">
         <h3 className="text-3xl font-semibold">User Dashbord</h3>
         <div className="mt-3">
@@ -18,9 +18,14 @@ const Dashbord = () => {
           </Link>
 
           {isAdmin && (
-            <Link to="../dashbord/manage-user">
-              <button className="btn btn-sm w-full my-2">All User</button>
-            </Link>
+            <>
+              <Link to="../dashbord/manage-user">
+                <button className="btn btn-sm w-full my-2">All User</button>
+              </Link>
+              <Link to="../dashbord/add-doctor">
+                <button className="btn btn-sm w-full my-2">Add a Doctor</button>
+              </Link>
+            </>
           )}
         </div>
       </div>
