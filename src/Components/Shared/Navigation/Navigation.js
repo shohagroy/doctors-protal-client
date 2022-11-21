@@ -26,7 +26,7 @@ const Navigation = () => {
       <NavLink to="/" className="p-2">
         Reviews
       </NavLink>
-      <NavLink to="/" className={`p-2 ${!user.email && "hidden"}`}>
+      <NavLink to="/dashbord" className={`p-2 ${!user.email && "hidden"}`}>
         Dashbord
       </NavLink>
       <NavLink to="/" className="p-2">

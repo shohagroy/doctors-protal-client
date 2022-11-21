@@ -1,10 +1,20 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { AuthContex } from "../../GobalAuthProvaider/GobalAuthProvaider";
 
 const SignUp = () => {
   const { createUser, updateUser } = useContext(AuthContex);
+  const [saveUser, setSaveUser] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const path = location.state?.path?.pathname || "/";
+
+  if (saveUser) {
+    navigate(path, { location: true });
+  }
 
   const {
     register,
@@ -19,16 +29,51 @@ const SignUp = () => {
         updateUser(data.name)
           .then(() => {
             // update user name
-            console.log(user);
+
+            const newUser = { name: user.displayName, email: user.email };
+            databaseUser(newUser);
+
+            const userEmail = { email: user.email };
+            if (userEmail) {
+              fetch(`http://localhost:5000/jwt`, {
+                method: "POST",
+                headers: {
+                  "content-type": "application/json",
+                },
+                body: JSON.stringify(userEmail),
+              })
+                .then((res) => res.json())
+                .then((data) => {
+                  if (data.jwtToken) {
+                    localStorage.setItem("token", data.jwtToken);
+                    navigate(path, { relative: true });
+                  }
+                });
+            }
           })
           .catch((err) => console.error(err));
       })
       .catch((err) => {
         console.error(err);
       });
-
-    console.log(data.email, data.password);
   };
+
+  const databaseUser = (user) => {
+    fetch("http://localhost:5000/users", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(user),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.acknowledged) {
+          setSaveUser(true);
+        }
+      });
+  };
+
   return (
     <section className="max-w-7xl mx-auto">
       <div className="h-[70vh] flex  justify-center items-center">

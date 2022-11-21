@@ -1,7 +1,7 @@
 import React from "react";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContex } from "../../GobalAuthProvaider/GobalAuthProvaider";
 
 const Login = () => {
@@ -9,17 +9,38 @@ const Login = () => {
 
   const { login } = useContext(AuthContex);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const path = location.state?.path?.pathname || "/";
+
   const handelLogin = (data) => {
     login(data.email, data.password)
       .then((result) => {
         const user = result.user;
 
-        console.log(user);
+        const userEmail = { email: user.email };
+
+        if (userEmail) {
+          fetch(`http://localhost:5000/jwt`, {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+            },
+            body: JSON.stringify(userEmail),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.jwtToken) {
+                localStorage.setItem("token", data.jwtToken);
+                navigate(path, { relative: true });
+              }
+            });
+        }
       })
       .catch((err) => {
         console.error(err);
       });
-    console.log(data);
   };
 
   return (

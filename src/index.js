@@ -6,6 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import GobalAuthProvaider from "./Components/GobalAuthProvaider/GobalAuthProvaider";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -15,6 +16,7 @@ root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <GobalAuthProvaider>
+        <Toaster />
         <App />
       </GobalAuthProvaider>
     </QueryClientProvider>

@@ -3,7 +3,6 @@ import bgImg from "../../../assets/images/bg.png";
 import heroImg from "../../../assets/images/chair.png";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
-import { format } from "date-fns";
 
 const AppointmentHero = ({ selected, setSelected }) => {
   return (

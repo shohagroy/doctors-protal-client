@@ -1,12 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { AuthContex } from "../../GobalAuthProvaider/GobalAuthProvaider";
 
 const AvailableAppointments = ({ selected }) => {
-  // const [appointmentOptions, setAppointmentOptions] = useState([]);
   const date = format(selected, "PP");
 
+  const { user, logOut } = useContext(AuthContex);
   const [selectedDate, setSelectedDate] = useState({});
   const { name, slots } = selectedDate;
 
@@ -16,9 +18,53 @@ const AvailableAppointments = ({ selected }) => {
     error,
   } = useQuery({
     queryKey: ["appointmentOptions", date],
-    queryFn: () =>
-      fetch("http://localhost:5000/appointments").then((res) => res.json()),
+    queryFn: async () => {
+      const res = await fetch(
+        `http://localhost:5000/appointments?email=${user.email}`,
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = await res.json();
+      if (data.massege === "unauthorized access") {
+        logOut();
+      } else {
+        return data;
+      }
+    },
   });
+
+  // submit appointment function
+  const submitAppointmentDate = (event) => {
+    event.preventDefault();
+    const from = event.target;
+
+    const patientDetail = {
+      tretmentName: name,
+      appointmentDate: from.appointmentDate.value,
+      appointmentTime: from.appointmentTime.value,
+      patientName: from.patientName.value,
+      email: from.email.value,
+      phone: from.phone.value,
+    };
+
+    fetch("http://localhost:5000/booking", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(patientDetail),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.acknowledged) {
+          toast.success(`Booking Confirm on date ${date}!`);
+          from.reset();
+        }
+      });
+  };
 
   return (
     <section className="max-w-7xl mx-auto relative">
@@ -30,7 +76,8 @@ const AvailableAppointments = ({ selected }) => {
           Available Appointments on {date}
         </h3>
         <div className="grid grid-cols-1 my-16 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {appointmentOptions.map((option) => (
+          {/* appointment map  */}
+          {appointmentOptions?.map((option) => (
             <div key={option._id} className="card shadow-xl">
               <div className="card-body">
                 <h2 className="text-secondary text-center text-xl font-bold">
@@ -72,44 +119,62 @@ const AvailableAppointments = ({ selected }) => {
             >
               ✕
             </label>
-            <h3 className="text-lg font-bold">{name}</h3>
-            <form>
+            <form onSubmit={submitAppointmentDate}>
+              <h3 name="tretment" className="text-lg font-bold">
+                {name}
+              </h3>
               <input
                 type="text"
+                name="appointmentDate"
                 disabled
                 value={date}
                 className="input input-bordered w-full mt-4  "
               />
-              <select className="input input-bordered w-full mt-4  ">
+              <select
+                className="input input-bordered w-full mt-4  "
+                name="appointmentTime"
+              >
                 {slots &&
-                  slots.map((time, i) => <option key={i}>{time}</option>)}
+                  slots.map((time, i) => (
+                    <option value={time} key={i}>
+                      {time}
+                    </option>
+                  ))}
               </select>
 
               <input
                 type="text"
                 placeholder="Patient Name"
+                name="patientName"
+                defaultValue={user?.displayName}
+                disabled
                 className="input input-bordered w-full my-2  "
               />
               <input
                 type="text"
+                name="email"
                 placeholder="Email Address"
+                defaultValue={user?.email}
+                disabled
                 className="input input-bordered w-full my-2  "
               />
               <input
-                type="text"
+                type="number"
                 placeholder="Phone Number"
+                name="phone"
                 className="input input-bordered w-full my-2  "
               />
+              <div className="modal-action" type="submit">
+                <button type="submit">
+                  <label
+                    className="btn btn-primary w-full text-white"
+                    htmlFor="book-appointment"
+                  >
+                    Book Now
+                  </label>
+                </button>
+              </div>
             </form>
-
-            <div className="modal-action">
-              <label
-                htmlFor="book-appointment"
-                className="btn btn-primary text-white"
-              >
-                Submit
-              </label>
-            </div>
           </div>
         </div>
       </div>
