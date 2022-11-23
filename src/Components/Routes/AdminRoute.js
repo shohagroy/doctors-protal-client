@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { AuthContex } from "../GobalAuthProvaider/GobalAuthProvaider";
+import LoadingLoader from "../Shared/Loader/LoadingLoader";
 import useAdmin from "../Shared/UseAdmin/useAdmin";
 
 const AdminRoute = ({ children }) => {
@@ -7,7 +8,7 @@ const AdminRoute = ({ children }) => {
   const [isAdmin, loading] = useAdmin(user?.email);
 
   if (loading) {
-    return <h2>Loading...</h2>;
+    return <LoadingLoader />;
   }
 
   if (isAdmin) {

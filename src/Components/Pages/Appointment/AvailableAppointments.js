@@ -10,17 +10,18 @@ const AvailableAppointments = ({ selected }) => {
 
   const { user, logOut } = useContext(AuthContex);
   const [selectedDate, setSelectedDate] = useState({});
-  const { name, slots } = selectedDate;
+  const { name, slots, price } = selectedDate;
 
   const {
     data: appointmentOptions = [],
     isLoading,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["appointmentOptions", date],
     queryFn: async () => {
       const res = await fetch(
-        `http://localhost:5000/appointments?email=${user.email}`,
+        `http://localhost:5000/appointments?email=${user.email}&date=${date}`,
         {
           headers: {
             authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -48,6 +49,7 @@ const AvailableAppointments = ({ selected }) => {
       patientName: from.patientName.value,
       email: from.email.value,
       phone: from.phone.value,
+      price: price,
     };
 
     fetch("http://localhost:5000/booking", {
@@ -61,6 +63,7 @@ const AvailableAppointments = ({ selected }) => {
       .then((data) => {
         if (data.acknowledged) {
           toast.success(`Booking Confirm on date ${date}!`);
+          refetch();
           from.reset();
         }
       });
@@ -94,6 +97,9 @@ const AvailableAppointments = ({ selected }) => {
                   </span>
                   {option.slots.length > 0 ? "SPACES" : "SPACE"} AVAILABLE
                 </p>
+                <p className="text-center font-semibold text-red-600">
+                  <small>${option.price}</small>
+                </p>
                 <div className="card-actions  justify-center ">
                   <label
                     className="btn bg-gradient-to-r from-primary text-white border-none to-secondary"
@@ -123,6 +129,8 @@ const AvailableAppointments = ({ selected }) => {
               <h3 name="tretment" className="text-lg font-bold">
                 {name}
               </h3>
+              <p className="mt-2 font-bold text-red-600">${price} Only!</p>
+
               <input
                 type="text"
                 name="appointmentDate"

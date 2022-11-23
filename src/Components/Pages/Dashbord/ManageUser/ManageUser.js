@@ -1,9 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { AuthContex } from "../../../GobalAuthProvaider/GobalAuthProvaider";
+import LoadingButton from "../../../Shared/Loader/LoadingButton";
+import LoadingLoader from "../../../Shared/Loader/LoadingLoader";
 
 const ManageUser = () => {
   const { user, logOut } = useContext(AuthContex);
+  const [removeButtonLoading, setRemoveButtonLoading] = useState(false);
+  const [makeButtonLoading, setMakeButtonLoading] = useState(false);
   const {
     data: users = [],
     isLoading,
@@ -29,10 +33,11 @@ const ManageUser = () => {
   });
 
   if (isLoading) {
-    return <h2>Loading...</h2>;
+    return <LoadingLoader />;
   }
 
   const makeAdminHandelar = (id) => {
+    setMakeButtonLoading(true);
     fetch(`http://localhost:5000/makeAdmin?email=${user.email}&id=${id}`, {
       method: "PUT",
       headers: {
@@ -44,11 +49,13 @@ const ManageUser = () => {
         if (data.massege === "unauthorized access") {
           logOut();
         }
+        setMakeButtonLoading(false);
         refetch();
       });
   };
 
   const removeAdminHandelar = (id) => {
+    setRemoveButtonLoading(true);
     fetch(`http://localhost:5000/removeAdmin?email=${user.email}&id=${id}`, {
       method: "PUT",
       headers: {
@@ -60,6 +67,7 @@ const ManageUser = () => {
         if (data.massege === "unauthorized access") {
           logOut();
         }
+        setRemoveButtonLoading(false);
         refetch();
       });
   };
@@ -87,22 +95,27 @@ const ManageUser = () => {
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>
-                  <button
-                    onClick={() => makeAdminHandelar(user._id)}
-                    disabled={user.role === "admin"}
-                    className="btn btn-sm bg-green-500 text-white"
-                  >
-                    Admin
-                  </button>
+                  <div onClick={() => makeAdminHandelar(user._id)}>
+                    <LoadingButton
+                      loading={makeButtonLoading}
+                      color="bg-green-600"
+                      font="text-white"
+                      disable={user.role === "admin"}
+                      text="make admin"
+                    />
+                  </div>
                 </td>
                 <td>
-                  <button
-                    onClick={() => removeAdminHandelar(user._id)}
-                    disabled={user.role !== "admin"}
-                    className="btn btn-sm bg-red-600 text-white"
-                  >
-                    Remove
-                  </button>
+                  <div onClick={() => removeAdminHandelar(user._id)}>
+                    <LoadingButton
+                      loading={removeButtonLoading}
+                      color="bg-red-600"
+                      font="text-white"
+                      disable={user.role !== "admin"}
+                      className="bg-red-600"
+                      text="remove admin"
+                    />
+                  </div>
                 </td>
               </tr>
             ))}

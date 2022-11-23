@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import { AuthContex } from "../../GobalAuthProvaider/GobalAuthProvaider";
 
 const Login = () => {
   const { register, handleSubmit } = useForm();
+  const [authError, setAuthError] = useState("");
 
   const { login } = useContext(AuthContex);
 
@@ -15,6 +16,7 @@ const Login = () => {
   const path = location.state?.path?.pathname || "/";
 
   const handelLogin = (data) => {
+    setAuthError("");
     login(data.email, data.password)
       .then((result) => {
         const user = result.user;
@@ -39,7 +41,8 @@ const Login = () => {
         }
       })
       .catch((err) => {
-        console.error(err);
+        setAuthError(err.code.slice(5));
+        console.error(err.code.slice(5));
       });
   };
 
@@ -75,6 +78,9 @@ const Login = () => {
               <label className="label">
                 <span className="label-text">Forgot Password ?</span>
               </label>
+            </div>
+            <div>
+              <p className="text-center font-bold text-red-600">{authError}</p>
             </div>
             <div className="mt-4">
               <input

@@ -6,6 +6,7 @@ import { AuthContex } from "../../GobalAuthProvaider/GobalAuthProvaider";
 const SignUp = () => {
   const { createUser, updateUser } = useContext(AuthContex);
   const [saveUser, setSaveUser] = useState(false);
+  const [authError, setAuthError] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -23,6 +24,7 @@ const SignUp = () => {
   } = useForm();
 
   const handelSignUp = (data) => {
+    setAuthError("");
     createUser(data.email, data.password)
       .then((result) => {
         const user = result.user;
@@ -54,6 +56,7 @@ const SignUp = () => {
           .catch((err) => console.error(err));
       })
       .catch((err) => {
+        setAuthError(err.code.slice(5));
         console.error(err);
       });
   };
@@ -141,6 +144,11 @@ const SignUp = () => {
               {errors.password && (
                 <p className="text-red-600">{errors.password?.message}</p>
               )}
+            </div>
+            <div>
+              <p className="text-center mt-5 font-bold text-red-600">
+                {authError}
+              </p>
             </div>
             <div className="mt-4">
               <input

@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { useContext } from "react";
+import { Link } from "react-router-dom";
 import swal from "sweetalert";
 import { AuthContex } from "../../../GobalAuthProvaider/GobalAuthProvaider";
+import LoadingLoader from "../../../Shared/Loader/LoadingLoader";
 
 const MyAppointment = () => {
   const { user, logOut } = useContext(AuthContex);
@@ -30,10 +32,6 @@ const MyAppointment = () => {
       }
     },
   });
-
-  if (isLoading) {
-    return <h2>Loading...</h2>;
-  }
 
   const deletedAppointment = (id) => {
     swal({
@@ -65,10 +63,17 @@ const MyAppointment = () => {
     });
   };
 
+  if (isLoading) {
+    return <LoadingLoader />;
+  }
+
   return (
-    <div className="w-full">
-      <div>
+    <div className="w-full relative">
+      <div className="flex justify-between items-center">
         <h3 className="text-3xl">My appointment - {appointments.length}</h3>
+        <p className="text-xl font-semibold py-2 px-4 border rounded-md">
+          {new Date().toDateString().slice(4)}
+        </p>
       </div>
       <div className="overflow-x-auto my-6">
         <table className="table w-full">
@@ -78,6 +83,7 @@ const MyAppointment = () => {
               <th>Treatment Name</th>
               <th>Appointment Date</th>
               <th>Appointment Time</th>
+              <th>Price</th>
               <th>Paynemt</th>
               <th>Deleted</th>
             </tr>
@@ -89,10 +95,21 @@ const MyAppointment = () => {
                 <td>{appointment.tretmentName}</td>
                 <td>{appointment.appointmentDate}</td>
                 <td>{appointment.appointmentTime}</td>
+                <td className="text-red-600 font-bold">${appointment.price}</td>
                 <td>
-                  <button className="btn btn-sm bg-green-500 text-white">
-                    Pay
-                  </button>
+                  {appointment.status !== "PAID" ? (
+                    <Link to={`../../dashbord/payment/${appointment._id}`}>
+                      <button className="btn btn-sm bg-green-500 text-white">
+                        Pay
+                      </button>
+                    </Link>
+                  ) : (
+                    <Link>
+                      <button className="btn btn-sm bg-primary text-white">
+                        Metting Now
+                      </button>
+                    </Link>
+                  )}
                 </td>
                 <td>
                   <button

@@ -4,8 +4,11 @@ import Main from "../Layout/Main";
 import Appointment from "../Pages/Appointment/Appointment";
 import AddDoctor from "../Pages/Dashbord/AddDoctor/AddDoctor";
 import Dashbord from "../Pages/Dashbord/Dashbord";
+import ManageDoctors from "../Pages/Dashbord/ManageDoctors/ManageDoctors";
 import ManageUser from "../Pages/Dashbord/ManageUser/ManageUser";
 import MyAppointment from "../Pages/Dashbord/MyAppointment/MyAppointment";
+import Payment from "../Pages/Dashbord/Payment/Payment";
+import Transactions from "../Pages/Dashbord/Payment/Transactions";
 import Home from "../Pages/Home/Home";
 import Login from "../Pages/Login/Login";
 import SignUp from "../Pages/SignUp/SignUp";
@@ -50,6 +53,28 @@ const router = createBrowserRouter([
             ),
           },
           {
+            path: "/dashbord/transactions",
+            element: (
+              <PrivateRoute>
+                <Transactions />
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "/dashbord/payment/:id",
+            loader: ({ params }) =>
+              fetch(`http://localhost:5000/appointment?id=${params.id}`, {
+                headers: {
+                  authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              }),
+            element: (
+              <PrivateRoute>
+                <Payment />
+              </PrivateRoute>
+            ),
+          },
+          {
             path: "/dashbord/manage-user",
             element: (
               <PrivateRoute>
@@ -65,6 +90,16 @@ const router = createBrowserRouter([
               <PrivateRoute>
                 <AdminRoute>
                   <AddDoctor />
+                </AdminRoute>
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "/dashbord/manage-doctors",
+            element: (
+              <PrivateRoute>
+                <AdminRoute>
+                  <ManageDoctors />
                 </AdminRoute>
               </PrivateRoute>
             ),

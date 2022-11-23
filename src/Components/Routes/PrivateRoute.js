@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { AuthContex } from "../GobalAuthProvaider/GobalAuthProvaider";
+import LoadingLoader from "../Shared/Loader/LoadingLoader";
 
 const PrivateRoute = ({ children }) => {
   const { user, loader } = useContext(AuthContex);
@@ -9,8 +10,8 @@ const PrivateRoute = ({ children }) => {
 
   if (loader) {
     return (
-      <div>
-        <h2>Loding...</h2>
+      <div className="flex justify-center items-center">
+        <LoadingLoader />
       </div>
     );
   }
